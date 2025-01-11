@@ -1,7 +1,12 @@
 from random import randint, choice
 from dataclasses import dataclass
+from typing import List
 
-class Spell():
+from ..Item import Item
+from ..Tags import *
+
+class Spell(Item):
+    tags = {SPELL, RANGED, MAGICAL}
     MIN_DAMAGE:int
     MAX_DAMAGE:int
 
@@ -16,10 +21,11 @@ class Spell():
     targets:int
     attack_form:str
     quality:str
+    types:List
 
     _qualities = ["Weak", "Medium", "Powerful"]
 
-    def __init__(self, owner, damage=None, magic=None, targets:int=None, attack_form:str=None):
+    def __init__(self, owner=None, damage=None, magic=None, targets:int=None, attack_form:str=None):
         self.owner = owner
 
         self.damage = (randint(self.MIN_DAMAGE, self.MAX_DAMAGE) 

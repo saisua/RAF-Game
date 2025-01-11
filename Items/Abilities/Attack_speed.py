@@ -2,12 +2,17 @@ from random import randint
 from typing import Any
 
 from .Ability import Ability, Effect
+from ..Tags import *
 
 class Attack_speed(Ability):
     MAX_TURNS = 3
     MIN_EFFECT = 1
     MAX_EFFECT = 5 # * 1.value
 
+    tags = (Ability.tags | 
+            {OFFENSIVE, MULTI_TURN, 
+            FAST, STATUS, MULTI_TARGET}
+        )
     name:str="attack speed boost"
     turns:int
 
@@ -18,7 +23,7 @@ class Attack_speed(Ability):
 
     #name:str, functions:Iterable[function], args:Iterable[dict], 
     #                    start:function=None, end:function=None, turns:int=1):
-    def __init__(self, owner:"Character", level:int=1, turns=None, groupal=None):
+    def __init__(self, owner:"Character"=None, level:int=1, turns=None, groupal=None):
         self.effectiveness = 1 + (randint(self.MIN_EFFECT,self.MAX_EFFECT)/10)
 
         super().__init__(owner=owner, turns=turns, groupal=groupal)

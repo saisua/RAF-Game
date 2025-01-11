@@ -104,7 +104,7 @@ class Combat():
 
         return result
 
-    def start(self):
+    def start_auto(self):
         print(" ### STARTING A COMBAT ###\n\n"+self.__str__())
         self.attack_order = []
         #movement_order = []

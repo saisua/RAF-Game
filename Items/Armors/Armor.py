@@ -1,23 +1,29 @@
 from random import randint
 from dataclasses import dataclass
+from typing import List
+
+from .. import Item
+from ..Tags import *
 
 # Any attack will target one of the armor-sitting zones
 # In case of hit, it will hit the armor, reducing the damage
 # dealt.
-class Armor():
+class Armor(Item):
     LIFE_PER_LEVEL:int
     PROTECTION_PER_LEVEL:int
     DAMAGE_PART:float
 
+    tags = {ARMOR, DEFENSIVE}
     level:int=None
     name:int=None
     protection:int=None
     life:int=None
     quality:str=None
+    types:List
 
     _qualities = ["Bad", "Regular", "Good", "Excellent"]
 
-    def __init__(self, owner, level:int, life:int=None, protection:int=None):
+    def __init__(self, owner=None, level:int=1, life:int=None, protection:int=None):
         self.owner = owner
 
         self.level = (level if randint(0,10) else level + 1 if randint(0,1) else level -1) or 1

@@ -1,8 +1,12 @@
 from random import choice
 
 from .Spell import Spell
+from ..Tags import *
 
 class Heal(Spell):
+    tags:set = (Spell.tags |
+            {DEFENSIVE, HEALING}
+        )
     MIN_DAMAGE:int = 10
     MAX_DAMAGE:int = 30
 
@@ -11,7 +15,7 @@ class Heal(Spell):
 
     MAX_TARGETS:int = 1
 
-    def __init__(self, owner, damage=None, magic=None, 
+    def __init__(self, owner=None, damage=None, magic=None, 
                         targets:int=None, attack_form:str=None):
         self.element = "Life"
         super().__init__(owner, damage, magic, targets, attack_form)

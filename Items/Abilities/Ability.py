@@ -1,21 +1,27 @@
 from random import randint
 from copy import deepcopy
 from dataclasses import dataclass
+from typing import List
 
 from ..Effects.Effect import Effect
+from Types.Type import Type
+from ..Item import Item,
+from ..Tags import *
 
-class Ability():
+class Ability(Item):
     PROB_GROUPAL:int = 7 # 1/value
     MAX_TURNS:int
 
+    tags = {ABIILITY}
     owner:"Character"
     name:str
     groupal:bool
     turns:int
+    types:List[str]
 
     effect:Effect
 
-    def __init__(self, owner:"Character", level:int=1, turns:int=None, name:str=None, groupal:bool=None):
+    def __init__(self, owner:"Character"=None, level:int=1, turns:int=None, name:str=None, groupal:bool=None):
         self.owner = owner
         
         if(name): self.name = name
@@ -51,6 +57,7 @@ class Ability():
                 result[attr] = self.__getattribute__(attr)
 
         return result
+
 
 """
 @dataclass

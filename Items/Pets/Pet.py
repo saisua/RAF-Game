@@ -1,8 +1,16 @@
 from random import randint
 from dataclasses import dataclass
 from termcolor import colored
+from typing import List
 
 from Combatter import Combatter
+from ..Item import Item
+from ..Tags import *
+
+"""
+Pet needs to be reworked to be a subclass of Character.
+"""
+
 
 # A pet is an entity which will have its own
 # turns just like any character. It will also
@@ -10,11 +18,11 @@ from Combatter import Combatter
 # to position itself
 # A pet can position itself either in front,
 # next or back of the character.
-# A pet in front will receive all strength until it faints
+# A pet in front will receive all damage until it faints
 # A pet placed next to the character will behave just like
 # any character
-# A pet placed behind will not take any strength from melee attacks 
-class Pet():
+# A pet placed behind will not take any damage from melee attacks 
+class Pet(Item):
     LIFE_PER_LEVEL:int
     DAMAGE_PER_LEVEL:int
     PROTECTION_PER_LEVEL:int
@@ -31,6 +39,7 @@ class Pet():
     MIN_PRECISSION:int=80
     MAX_PRECISSION:int=100
 
+    tags = {PET}
     level:int
     name:int
     strength:int
@@ -42,6 +51,7 @@ class Pet():
     precission:int
     evasion:int
     positioning:str
+    types:List
 
     attributes:"Pet_attr"
 

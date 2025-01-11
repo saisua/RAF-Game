@@ -1,20 +1,27 @@
 from random import randint
+from typing import List
 
 from .Ability import Ability
+from ..Tags import *
 
 class Magic(Ability):
+    PROB_GROUPAL = 0
     MAX_TURNS = 3
     MIN_EFFECT = 15
     MAX_EFFECT = 30
 
+    tags = (Ability.tags |
+            {RECOVER}
+        )
     name:str="magic recover"
     turns:int
+    types:List
 
     effectiveness:float
 
     #name:str, functions:Iterable[function], args:Iterable[dict], 
     #                    start:function=None, end:function=None, turns:int=1):
-    def __init__(self, owner:"Character", level:int=1, turns=None, groupal=None):
+    def __init__(self, owner:"Character"=None, level:int=1, turns=None, groupal=None):
         super().__init__(owner=owner, turns=0, groupal=groupal)
 
         self.effectiveness = (randint(self.MIN_EFFECT,self.MAX_EFFECT/2 if self.groupal else self.MAX_EFFECT))

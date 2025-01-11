@@ -1,0 +1,1 @@
+T4_REQUIREMENTS = {"level":lambda level: level >= 50}

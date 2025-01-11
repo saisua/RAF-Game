@@ -1,8 +1,13 @@
 from .Weapon import Weapon
+from ..Tags import *
 
 class Hammer(Weapon):
     LIFE_PER_LEVEL:int=25
     DAMAGE_PER_LEVEL:int=60
+
+    tags:set = (Weapon.tags |
+            {MELEE, SLOW, HEAVY}
+        )
 
     MAX_TARGETS:int=1
 
@@ -10,7 +15,7 @@ class Hammer(Weapon):
 
     MAX_HITS:int=1
 
-    def __init__(self, owner, level:int=None, damage:int=None, life:int=None):
+    def __init__(self, owner=None, level:int=None, damage:int=None, life:int=None):
         self.name = "Hammer"
         self.attack_form = "melee"
         self.reload_turns = 0

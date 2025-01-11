@@ -1,0 +1,1 @@
+T3_REQUIREMENTS = {"level":lambda level: level >= 30}

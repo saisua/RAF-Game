@@ -1,0 +1,1 @@
+T1_REQUIREMENTS = {"level":lambda level: level >= 5}

@@ -56,7 +56,7 @@ def main():
     menu_funct = {
         '1' : lambda: Combat({'Bona gent':[main, viic14], "Mala gent":[Character("Enemy1", main.level-randint(0,1)), 
                                                         Character("Enemy2", viic14.level-randint(0,1))]
-            }).start(),
+            }).start_auto(),
         '2' : lambda: print(f"{main._item_stats}\n\n{viic14._item_stats}"),
 
         '0' : lambda:0

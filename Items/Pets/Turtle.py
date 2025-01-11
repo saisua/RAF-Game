@@ -1,12 +1,18 @@
 from random import randint
 
 from .Pet import Pet
+from ..Tags import *
 
 class Turtle(Pet):
     LIFE_PER_LEVEL = 80
     DAMAGE_PER_LEVEL = 10
     PROTECTION_PER_LEVEL = 15
      
+    tags:set = (Pet.tags |
+            {DEFENSIVE, MELEE, PHYSICAL,
+            SLOW, HEAVY, ADAPTIVE}
+        )
+
     MIN_SPEED:int = 10
     MAX_SPEED:int = 15
 

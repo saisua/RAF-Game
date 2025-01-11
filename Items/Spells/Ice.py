@@ -1,8 +1,13 @@
 from random import randint
 
 from .Spell import Spell
+from ..Tags import *
 
 class Ice(Spell):
+    tags:set = (Spell.tags |
+            {OFFENSIVE, STATUS}
+        )
+
     MIN_DAMAGE:int = 10
     MAX_DAMAGE:int = 30
 
@@ -14,7 +19,7 @@ class Ice(Spell):
     FREEZE_PROBABILITY = 10 # 1/value
     FREEZE_MAX_TURNS = 3
 
-    def __init__(self, owner, damage=None, magic=None, 
+    def __init__(self, owner=None, damage=None, magic=None, 
                         targets:int=None, attack_form:str=None):
         self.element = "Ice"
         super().__init__(owner, damage, magic, targets, attack_form)

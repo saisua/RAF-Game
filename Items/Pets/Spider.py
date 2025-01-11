@@ -2,11 +2,18 @@ from random import randint
 
 from .Pet import Pet
 from ..Effects.Effect import Effect
+from ..Effects.Poison import Poison
+from ..Tags import *
 
 class Spider(Pet):
     LIFE_PER_LEVEL = 1
     DAMAGE_PER_LEVEL = 10
     PROTECTION_PER_LEVEL = 10
+
+    tags:set = (Pet.tags |
+            {OFFENSIVE, MELEE, PHYSICAL,
+            SLOW, STATUS}
+        )
 
     PROB_POISON = 4 # 1/value
     MAX_POISON_TURNS = 3
@@ -27,24 +34,11 @@ class Spider(Pet):
 
         super().__init__(owner, owner.level if level is None else level, life, damage)
 
-        self.poison_damage = randint(1, self.strength//2)
-
     def attack(self, enemy, *, can_call=None):
-        return super().attack(enemy)
-
         if(not randint(0, self.PROB_POISON)):
-            enemy.add_effect(Effect(self.name, [self.each_turn], [{}], 
-                    self.start, self.end, randint(1, self.MAX_POISON_TURNS)))
+            enemy.add_effect(Poison(
+                max_damage=self.strength//2,
+                min_damage=self.level
+                ))
 
-
-    def each_turn(self, combatter):
-        print(f"{combatter.name} got hurt by poison ({combatter.life} -> ", end='')
-        combatter.attributes.life -= self.poison_damage
-        print(f"{combatter.life})")
-
-    def start(self, combatter):
-        print(f"{combatter.name} got poisoned!")
-        self.each_turn(combatter)
-
-    def end(self, combatter):
-        print(f"{combatter.name} has recovered from the poison")
+        return super().attack(enemy)

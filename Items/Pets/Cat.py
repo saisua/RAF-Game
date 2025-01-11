@@ -1,12 +1,18 @@
 from random import randint
 
 from .Pet import Pet
+from ..Tags import *
 
 class Cat(Pet):
     LIFE_PER_LEVEL = 25
     DAMAGE_PER_LEVEL = 10
     PROTECTION_PER_LEVEL = 10
      
+    tags:set = (Pet.tags |
+            {OFFENSIVE, FAST, PHYSICAL,
+            MELEE, ADAPTIVE}
+        )
+
     MIN_SPEED:int = 25
     MAX_SPEED:int = 35
 

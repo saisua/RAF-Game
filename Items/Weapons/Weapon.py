@@ -1,8 +1,11 @@
 from random import randint
 from dataclasses import dataclass
+from typing import List
 
+from ..Item import Item
+from ..Tags import *
 
-class Weapon():
+class Weapon(Item):
     LIFE_PER_LEVEL:int
     DAMAGE_PER_LEVEL:int
 
@@ -12,6 +15,7 @@ class Weapon():
 
     MAX_HITS:int=1
 
+    tags = {WEAPON, OFFENSIVE}
     level:int=None
     name:int=None
     damage:int=None
@@ -21,12 +25,13 @@ class Weapon():
     reload_turns:int=None
     charges:int=None
     quality:str
+    types:List
 
     reloading:int = 0
 
     _qualities = ["nicked","harmful","blood-soaked"]
 
-    def __init__(self, owner:"Character", level:int, damage:int=None, life:int=None,
+    def __init__(self, owner:"Character"=None, level:int=1, damage:int=None, life:int=None,
                     targets:int=None, charges:int=None):
         self.owner = owner
 

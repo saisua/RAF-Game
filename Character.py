@@ -4,13 +4,18 @@ from random import choice, randint
 from codecs import encode, decode
 from os.path import isfile
 from operator import add
+import random
+from typing import List
 import dill
 import zlib
 import datetime
 
+from utils.dict_flatten import flatten
+from utils.choose_ponderated import choose_ponderated as choice_p
+
 from character.attributes import Attr_creation
 
-from Items.Random_item import Random_item, _groups as items_dict#, items_dummies
+from Items.Random_item import Random_item, _groups as items_dict, _all as all_items
 
 from Items.Armors.Random_armor import Random_armor as Armor, armor_types
 from Items.Armors.Shoes import Shoes
@@ -38,11 +43,14 @@ class Character():
     _ADD_COMBAT_EVERY_LEVEL:int = 5
 
     name:str
+    generated_name:str
     level:int
     experience:int
     combats_played:int
     attributes:"Attributes"
     items:defaultdict
+    types:List
+    specializations:dict
 
     max_held_items:int
     max_equiped_armor:int
@@ -60,6 +68,7 @@ class Character():
         self.items = {i_name:{specific:[] for specific in item.keys()} for i_name,item in items_dict.items()}
         self.max_held_items = max_held_items
         self.max_equiped_armor = armor_types
+        self.specializations = {}
 
         self.level = level
         for _ in range(level-1):
@@ -68,7 +77,9 @@ class Character():
         self.experience = 0
         self.combats_played = 0
 
-        print(f"Welcome, {name} {self.attributes.description}")
+
+        self.generated_name = f"{self.name} {self.attributes.description}"
+        print(f"Welcome, {self.generated_name}")
 
         
         for item in maximums:
@@ -112,6 +123,15 @@ class Character():
         return f"{self.name} {self.attributes.description} (lvl: {self.level}) \n  Items held: {''.join(items_print)}"
 
 
+    def select_item(self, class:str=None):
+        if(class is None):
+            group = all_items
+        else:
+            group = items_dict[class]
+        
+        # Select ponderated and get from all_items
+        return group[choice_p(self.preferences["Items"], 
+                                    list(all_items.keys()))[0]]
 
     def add_item(self, item):
         print(f"  {self.name} received a new {item}!")
@@ -129,7 +149,8 @@ class Character():
 
             print(f"!\n{self} leveled up to level {self.level}! "+choice(
                 ["Nice job!", "Congratulations!", "As expected", "Well done!",
-                "Keep it going!"]
+                "Keep it going!", "I've always trusted you",
+                "Keep growing, my friend", "Keep it up!", "Yeah!"]
             ))
         else:
             print(f" -> {self.experience}xp!")
@@ -138,7 +159,7 @@ class Character():
         self.combats_played += 1
 
         if(not self.combats_played % self._COMBATS_PER_ITEM):
-            self.add_item(Random_item(self))
+            self.add_item(self.select_item())
 
         if(self.last_combat.date() < combat_datetime.date()):
             self.today_combats = 1
@@ -162,7 +183,38 @@ class Character():
 
         #print(f"\n[debug] profile_value = {self.attributes.profile_value}\n")
 
+        # There will be some points assigned
+        # to random attributes, based in character preferences,
+        # if there are any.
+        random_points = min(Attr_creation.level_up.items()) * 2
+        random_points_dict = defaultdict(int)
+
+        character_prefs = self.preferences
+        no_prefs = len(Attr_creation.level_up) - character_prefs["attr"]
+
+        # Assing random points to attributes based
+        # on the probabilities of the preferences.
+        while(random_points > 0):
+            key, points = choice_p(character_prefs["Attributes"],
+                                    list(Attr_creation.level_up.keys()))
+
+            # We add the points we are assiging to the
+            # dict that has to be used to assign them
+            random_points_dict[key] = points
+            
+            # We subtract the points we are assigning
+            # from the random points we have to assign
+            random_points -= points
+
+            # We remove the key from the ponderated
+            # attributes to assign
+            character_prefs.pop(key)
+            no_prefs += 1
+
+
         for attr, max_value in Attr_creation.level_up.items():
+            # The amount of points allocated is based on the difference
+            # between the max value and the current value
             min_value = (max_value*(self.level-1))-self.attributes._get(attr)
             add_value = True
 
@@ -170,18 +222,21 @@ class Character():
                 if(randint(0,1)):
                     min_value = -max_value*2 // 3
                 else:
-                    add_value = 0
+                    add_value = False
             else:
                 min_value = min_value // 2
 
             add_value = add_value and randint(min_value, min_value+max_value)*multiplier
+
+            if(attr in random_points_dict):
+                add_value += random_points_dict.pop(attr)
 
             #print(f"add_value: {add_value}")
 
             # Keep attributes around a level-based maxim
             adjust_value = add_value + self.attributes._get(attr)
             if(adjust_value > max_value*self.level):
-                #print("Value was to be too big")
+                #print("Value was going to be too big")
                 reduction_value = 1-(adjust_value/(max_value*self.level))
                 adjust_value = reduction_value if 0 < reduction_value < 1 else 0.1
             else: 
@@ -196,6 +251,19 @@ class Character():
 
         self.attributes.profile_value = new_profile_value/len(Attr_creation.level_up)
         #print(f"\n[debug] new profile_value = {self.attributes.profile_value}\n")
+
+    def generate_name(self) -> None:
+        if(len(self.specializations.get("class", []))):
+            main_class = self.specializations["class"][0].__class__.__name__.lower()
+
+            if(self.attributes.description != main_class):
+                self.generated_name = (
+                        f"{self.name} {self.attributes.description} {main_class}"
+                    )
+        
+        # If none is valid
+        self.generated_name = f"{self.name} {self.attributes.description}"
+
 
     def share(self):
         result = {}
@@ -246,6 +314,29 @@ class Character():
             return False
 
         return True
+
+    @property
+    def preferences(self) -> dict:
+        prefs = defaultdict(int)
+
+        prefs["Attributes"] = defaultdict(int)
+        prefs["Items"] = defaultdict(int)
+
+        for class in self.specializations.get("class", []):
+            for attr, value in class.preferences["Attributes"].items():
+                prefs[attr] += value
+                prefs["Attributes"][attr] += value
+
+            for item_class, pref_dict in flatten(class.preferences["Items"]).items():
+                pref_set = set(pref_dict.keys())
+                for item in items_dict[item_class].values():
+                    value = item.score_tags(pref_set)
+                    prefs[item.__name__] += value * pref_dict.get(item.__name__, 1)
+                    prefs["Items"][item.__name__] += (value * 
+                                                    pref_dict.get(item.__name__, 1))
+
+        return prefs
+
 
     # Static functions
 

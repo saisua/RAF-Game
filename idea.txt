@@ -1,0 +1,22 @@
+Algo així com fer un hash de les propietats importants de cada item, rodejats de valors "honeypot" inútils. Aleatòri-ponderadament, modificar cada valor de cada hash, on les propietats estàn ordenades per importància (major - esquerra, menor - dreta). 
+El primer valor i més important seria el del tipo de objècte (Hechizo, Arma...) i això no pot canviar. El 2n el nivell, que tampoc pot. El 3r, la classe (Foc, Gel...) i això és molt raro que canvie... etc.
+Els hash gastarien un mètode de comprovació tipo DNI, per evitar molts encerts
+
+El número de honeypots augmenta segons el nivell.
+Per a aprendre algo desde un blueprint, es va fent proves, però cada número que es canvia es comprova si està més prop de l'original, i si ho està, es manté.
+Si es vol millorar de nivell algo, es re-mapejen els valors i es va fent proves fins que els valors són almenys el mínim de eixe nivell. En el cas de ser un objècte, el poder elegir el nivell vé segons el nivell de coneixement en la professió, i necessita de materials. Sols es poden fabricar els objèctes dels que es tinguen els materials.
+
+Els últims n-dígits són error, que a pesar de que es tinga el objecte perfècte, sempre es pot millorar eixos valors, i són aleatòris quan es comença sempre, encara que es comence en un blueprint.
+
+En get_item, permitir seleccionar tipo, i agafar items[tipo] en comptes de all_items
+
+Afegir als hechizos base strings que indiquen el progrés tipo: "He conseguido hacer un copo de nieve!" o "una ventisca" o "un carámbano de hielo" etc.
+Cada vegada que es canvia de classe d'objècte es diu el primer, i segons el percentatge de proximitat a el valor objectiu, es va augmentant.
+Crear textos per a millores també.
+Afegir valors tipo "size" que dificulten el generar una pechera desde uns guants contra desde unes sabates.
+
+A més habilitat millorant, més valors iguals es tenen inicialment.
+
+
+Tendes classificar per a probabilitats simplex segons tipo d'objècte, classe, més car, o més barat. Quan s'especialitze, que canvie el nom a "nom: cheap ..." o "nom: high quality ..."
+Les probabilitats de venta no són cada dia, sino cada vegada que es compra algo, i van normalitzant-sr

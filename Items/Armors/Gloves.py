@@ -1,13 +1,14 @@
 from random import randint
 
 from .Armor import Armor
+from ..Tags import *
 
 class Gloves(Armor):
     LIFE_PER_LEVEL = 60
     PROTECTION_PER_LEVEL = 2
     DAMAGE_PART = 1.1
 
-    def __init__(self, owner, level:int=None, life:int=None, protection:int=None):
+    def __init__(self, owner=None, level:int=None, life:int=None, protection:int=None):
         self.name = "Gloves armor"
 
         super().__init__(owner, owner.level if level is None else level, life, protection)

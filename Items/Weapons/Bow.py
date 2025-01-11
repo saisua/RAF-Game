@@ -1,8 +1,13 @@
 from .Weapon import Weapon
+from ..Tags import *
 
 class Bow(Weapon):
     LIFE_PER_LEVEL:int=50
     DAMAGE_PER_LEVEL:int=45
+
+    tags:set = (Weapon.tags |
+            {RANGED, PHYSICAL, MULTI_TARGET, LIGHT}
+        )
 
     MAX_TARGETS:int=2
 
@@ -10,7 +15,7 @@ class Bow(Weapon):
 
     MAX_HITS:int=1
 
-    def __init__(self, owner, level:int=None, damage:int=None, life:int=None):
+    def __init__(self, owner=None, level:int=None, damage:int=None, life:int=None):
         self.name = "Bow"
         self.attack_form = "distance"
         self.reload_turns = 0

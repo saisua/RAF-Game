@@ -1,8 +1,13 @@
 from random import randint
 
 from .Spell import Spell
+from ..Tags import *
 
 class Blood(Spell):
+    tags:set = (Spell.tags |
+            {OFFENSIVE, HEALING, ABSORPTION}
+        )
+
     MIN_DAMAGE:int = 10
     MAX_DAMAGE:int = 20
 
@@ -16,7 +21,7 @@ class Blood(Spell):
 
     absortion:float
 
-    def __init__(self, owner, damage=None, magic=None, 
+    def __init__(self, owner=None, damage=None, magic=None, 
                         targets:int=None, attack_form:str=None):
         self.element = "Blood"
         self.absortion = randint(self.MIN_ABSORB, self.MAX_ABSORB) / 10
